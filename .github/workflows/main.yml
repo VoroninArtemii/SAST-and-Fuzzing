@@ -1,0 +1,44 @@
+name: SAST & Fuzzing
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  fuzz:
+    
+    runs-on: ubuntu-22.04
+    
+    steps:
+    
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y afl++ clang python3-pip
+          pip install semgrep
+
+      - name: Run Semgrep
+        run: |
+          semgrep --config semgrep-rules.yml vulnerable-project --json > semgrep-report.json
+
+      - name: Generate seeds
+        run: |
+          afl-clang-fast -fsanitize=address vulnerable-project/main.c -o vulnerable-project/fuzz_target
+
+      - name: Run AFL++
+        run: |
+          export AFL_I_DONT_CARE_ABOUT_MISSING_CRASHES=1
+          export AFL_SKIP_CPUFREQ=1
+          timeout 60 afl-fuzz -i generated_seeds -o findings ./vulnerable-project/fuzz_target @@
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: results
+          path: |
+            findings
+            generated_seeds
+            semgrep-report.json
