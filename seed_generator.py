@@ -2,7 +2,7 @@ import json
 import re
 from pathlib import Path
 
-SEMGRP_REPORT = "report.json"
+SEMGREP_REPORT = "semgrep-report.json"
 SEED_DIR = Path("generated_seeds")
 SEED_DIR.mkdir(exist_ok=True)
 FUNC_DEF_RE = re.compile(r'^\s*(?:void|int|char|size_t|long|short|float|double)\s+([A-Za-z_][A-Za-z0-9_]*)\s*\(', re.MULTILINE)
@@ -63,7 +63,7 @@ def generate_chains(strings):
         seeds.add(chain)
     return seeds
 
-with open(SEMGRP_REPORT) as f:
+with open(SEMGREP_REPORT) as f:
     report = json.load(f)
 
 for result in report["results"]:
