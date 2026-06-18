@@ -22,7 +22,7 @@ jobs:
 
       - name: Run Semgrep
         run: |
-          semgrep --config semgrep-rules.yml vulnerable-project --json > semgrep-report.json
+          semgrep --config semgrep-rules.json vulnerable-project --json > semgrep-report.json
 
       - name: Generate seeds
         run: |
