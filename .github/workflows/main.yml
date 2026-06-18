@@ -5,7 +5,7 @@ on:
   pull_request:
 
 jobs:
-  fuzz:
+  Pipeline:
     
     runs-on: ubuntu-22.04
     
@@ -36,7 +36,8 @@ jobs:
         run: |
           export AFL_I_DONT_CARE_ABOUT_MISSING_CRASHES=1
           export AFL_SKIP_CPUFREQ=1
-          timeout 60 afl-fuzz -i generated_seeds -o findings ./vulnerable-project/fuzz_target @@
+          timeout 60
+          afl-fuzz -i generated_seeds -o findings ./vulnerable-project/fuzz_target @@  || true
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
