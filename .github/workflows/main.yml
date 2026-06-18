@@ -26,6 +26,10 @@ jobs:
 
       - name: Generate seeds
         run: |
+          python3 seed_generator.py
+
+      - name: Build AFL target
+        run: |
           afl-clang-fast -fsanitize=address vulnerable-project/main.c -o vulnerable-project/fuzz_target
 
       - name: Run AFL++
