@@ -38,11 +38,15 @@ jobs:
           export AFL_SKIP_CPUFREQ=1
           timeout 60 afl-fuzz -i generated_seeds -o findings ./vulnerable-project/fuzz_target @@  || true
 
+      - name: Archive findings
+        run: |
+          tar -czf findings.tar.gz findings
+
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: results
           path: |
-            findings
+            findings.tar.gz
             generated_seeds
             semgrep-report.json
